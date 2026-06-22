@@ -8,9 +8,9 @@
   <style>
     body {
       margin: 0;
-      font-family: "Tahoma", sans-serif;
-      background: linear-gradient(135deg, #ffe1ec, #fff6fb);
-      color: #4a2433;
+      font-family: Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #d9fff3, #f4fffb);
+      color: #21423c;
       text-align: center;
     }
 
@@ -21,34 +21,60 @@
     h1 {
       font-size: 42px;
       margin-bottom: 10px;
-      color: #d63384;
+      color: #0f9f8c;
     }
 
-    p {
+    .english-line {
       font-size: 18px;
+      color: #315f57;
+      max-width: 750px;
+      margin: 0 auto;
+      line-height: 1.7;
     }
 
     .card {
       background: white;
       width: 85%;
-      max-width: 700px;
+      max-width: 750px;
       margin: 25px auto;
       padding: 25px;
       border-radius: 25px;
-      box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
+      box-shadow: 0 10px 30px rgba(15, 159, 140, 0.18);
+    }
+
+    h2 {
+      color: #21423c;
     }
 
     .message {
       font-size: 24px;
       line-height: 1.8;
-      color: #8a2d56;
+      color: #0b6b5f;
       min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .counter {
       margin-top: 15px;
-      color: #777;
+      color: #6b7c78;
       font-size: 15px;
+    }
+
+    button {
+      background: #12b8a6;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 5px 0;
+    }
+
+    button:hover {
+      background: #0f9f8c;
     }
 
     .gallery {
@@ -68,31 +94,36 @@
 
     .empty {
       padding: 25px;
-      border: 2px dashed #d63384;
+      border: 2px dashed #12b8a6;
       border-radius: 18px;
-      color: #d63384;
-      background: #fff0f6;
+      color: #0f9f8c;
+      background: #effffb;
+    }
+
+    .all-messages {
+      display: none;
+      text-align: right;
+      margin-top: 20px;
+      max-height: 350px;
+      overflow-y: auto;
+      background: #f4fffb;
+      border-radius: 18px;
+      padding: 15px;
+      border: 1px solid #bff5ea;
+    }
+
+    .all-messages p {
+      margin: 10px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #d9fff3;
+      color: #315f57;
+      line-height: 1.6;
     }
 
     footer {
       padding: 30px;
       font-size: 15px;
-      color: #777;
-    }
-
-    button {
-      background: #d63384;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    button:hover {
-      background: #b92c70;
+      color: #6b7c78;
     }
   </style>
 </head>
@@ -101,14 +132,20 @@
 
   <header>
     <h1>كل سنة وإنت حبيبي ❤️</h1>
-    <p>مكان صغير لصورنا ورسالة حب جديدة كل يوم</p>
+    <p class="english-line" dir="ltr">
+      I’m trying to make every day of your life a little more beautiful, just like you do with mine.
+    </p>
   </header>
 
   <section class="card">
     <h2>رسالة النهارده 💌</h2>
     <div class="message" id="dailyMessage"></div>
     <div class="counter" id="dayCounter"></div>
+
     <button onclick="showTodayMessage()">اعرض رسالة النهارده</button>
+    <button onclick="toggleAllMessages()">اعرض كل الرسايل</button>
+
+    <div class="all-messages" id="allMessages"></div>
   </section>
 
   <section class="card">
@@ -122,28 +159,34 @@
   </section>
 
   <footer>
-    Made with love ❤️
+    ❤️ Made with love
   </footer>
 
   <script>
     /*
-      تاريخ بداية الرسائل.
-      غيري التاريخ ده لليوم اللي عايزة الموقع يبدأ منه.
-      الصيغة: سنة-شهر-يوم
+      تاريخ بداية الرسائل:
+      الرسالة رقم 1 هتظهر يوم 7 يوليو 2026
     */
-    const startDate = "2026-06-22";
+    const startDate = "2026-07-07";
 
     /*
-      هنضيف الصور هنا بعد ما نرفعها على GitHub.
-      مثال بعدين:
+      هنا هنضيف الصور بعد ما نرفعها على GitHub.
+      مثال:
       const photos = [
         "photos/photo1.jpg",
-        "photos/photo2.jpg"
+        "photos/photo2.jpg",
+        "photos/photo3.jpg"
       ];
     */
     const photos = [];
 
-    const beginnings = [
+    /*
+      لو عايزة تبعتيلي رسايل معينة، هنحطها هنا.
+      حاليًا سايبينها فاضية، والكود هيستخدم الرسايل الجاهزة تحت.
+    */
+    const customMessages = [];
+
+    const messageStarts = [
       "وجودك في حياتي أجمل صدفة حصلتلي.",
       "كل يوم معاك بيأكدلي إن الحب حقيقي.",
       "ابتسامتك بتخلي أي يوم أحلى.",
@@ -219,7 +262,7 @@
       "كل لحظة معاك بتتحفظ جوايا."
     ];
 
-    const endings = [
+    const messageEnds = [
       "ربنا يخليك ليا دايمًا ❤️",
       "ويفضل حبنا يكبر يوم ورا يوم ❤️",
       "وأفضل دايمًا شايفة الدنيا أحلى بيك ❤️",
@@ -227,31 +270,70 @@
       "كل سنة وإنت حبيبي وفرحتي ❤️"
     ];
 
-    const messages = [];
+    function buildMessages() {
+      const generatedMessages = [];
 
-    for (let i = 0; i < beginnings.length; i++) {
-      for (let j = 0; j < endings.length; j++) {
-        messages.push(beginnings[i] + " " + endings[j]);
+      for (let i = 0; i < messageStarts.length; i++) {
+        for (let j = 0; j < messageEnds.length; j++) {
+          generatedMessages.push(messageStarts[i] + " " + messageEnds[j]);
+        }
       }
+
+      return [...customMessages, ...generatedMessages].slice(0, 365);
+    }
+
+    const messages = buildMessages();
+
+    function makeLocalDate(dateText) {
+      const parts = dateText.split("-");
+      return new Date(parts[0], parts[1] - 1, parts[2]);
     }
 
     function showTodayMessage() {
+      const oneDay = 1000 * 60 * 60 * 24;
       const today = new Date();
-      const start = new Date(startDate);
+      const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const start = makeLocalDate(startDate);
 
-      const difference = today - start;
-      let dayNumber = Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
+      const differenceInDays = Math.floor((todayOnly - start) / oneDay);
 
-      if (dayNumber < 1) {
-        dayNumber = 1;
+      if (differenceInDays < 0) {
+        const daysLeft = Math.abs(differenceInDays);
+        document.getElementById("dailyMessage").innerText =
+          "أول رسالة هتبدأ يوم 7 يوليو 2026 💌";
+        document.getElementById("dayCounter").innerText =
+          "باقي " + daysLeft + " يوم على بداية الرسائل";
+        return;
       }
+
+      let dayNumber = differenceInDays + 1;
 
       if (dayNumber > 365) {
         dayNumber = 365;
       }
 
       document.getElementById("dailyMessage").innerText = messages[dayNumber - 1];
-      document.getElementById("dayCounter").innerText = "اليوم رقم " + dayNumber + " من 365";
+      document.getElementById("dayCounter").innerText =
+        "اليوم رقم " + dayNumber + " من 365";
+    }
+
+    function toggleAllMessages() {
+      const allMessagesDiv = document.getElementById("allMessages");
+
+      if (allMessagesDiv.style.display === "block") {
+        allMessagesDiv.style.display = "none";
+        return;
+      }
+
+      allMessagesDiv.innerHTML = "";
+
+      messages.forEach((message, index) => {
+        const p = document.createElement("p");
+        p.innerText = "اليوم " + (index + 1) + ": " + message;
+        allMessagesDiv.appendChild(p);
+      });
+
+      allMessagesDiv.style.display = "block";
     }
 
     function loadPhotos() {
