@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Love</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Tahoma", sans-serif;
+      background: linear-gradient(135deg, #ffe1ec, #fff6fb);
+      color: #4a2433;
+      text-align: center;
+    }
+
+    header {
+      padding: 60px 20px 30px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #d63384;
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .card {
+      background: white;
+      width: 85%;
+      max-width: 700px;
+      margin: 25px auto;
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
+    }
+
+    .message {
+      font-size: 24px;
+      line-height: 1.8;
+      color: #8a2d56;
+      min-height: 120px;
+    }
+
+    .counter {
+      margin-top: 15px;
+      color: #777;
+      font-size: 15px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .empty {
+      padding: 25px;
+      border: 2px dashed #d63384;
+      border-radius: 18px;
+      color: #d63384;
+      background: #fff0f6;
+    }
+
+    footer {
+      padding: 30px;
+      font-size: 15px;
+      color: #777;
+    }
+
+    button {
+      background: #d63384;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #b92c70;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>كل سنة وإنت حبيبي ❤️</h1>
+    <p>مكان صغير لصورنا ورسالة حب جديدة كل يوم</p>
+  </header>
+
+  <section class="card">
+    <h2>رسالة النهارده 💌</h2>
+    <div class="message" id="dailyMessage"></div>
+    <div class="counter" id="dayCounter"></div>
+    <button onclick="showTodayMessage()">اعرض رسالة النهارده</button>
+  </section>
+
+  <section class="card">
+    <h2>صورنا 📸</h2>
+
+    <div class="gallery" id="gallery"></div>
+
+    <div class="empty" id="emptyPhotos">
+      لسه هنضيف الصور هنا في الخطوة الجاية ❤️
+    </div>
+  </section>
+
+  <footer>
+    Made with love ❤️
+  </footer>
+
+  <script>
+    /*
+      تاريخ بداية الرسائل.
+      غيري التاريخ ده لليوم اللي عايزة الموقع يبدأ منه.
+      الصيغة: سنة-شهر-يوم
+    */
+    const startDate = "2026-06-22";
+
+    /*
+      هنضيف الصور هنا بعد ما نرفعها على GitHub.
+      مثال بعدين:
+      const photos = [
+        "photos/photo1.jpg",
+        "photos/photo2.jpg"
+      ];
+    */
+    const photos = [];
+
+    const beginnings = [
+      "وجودك في حياتي أجمل صدفة حصلتلي.",
+      "كل يوم معاك بيأكدلي إن الحب حقيقي.",
+      "ابتسامتك بتخلي أي يوم أحلى.",
+      "إنت الأمان اللي قلبي اختاره.",
+      "بحب تفاصيلك الصغيرة قبل الكبيرة.",
+      "صوتك لوحده كفاية يطمن قلبي.",
+      "معاك الدنيا بتبقى أهدى وأجمل.",
+      "إنت الشخص اللي بحمد ربنا عليه كل يوم.",
+      "قربك نعمة مش عادية.",
+      "بحبك بطريقة أكبر من الكلام.",
+      "كل ذكرى بينا ليها مكان خاص في قلبي.",
+      "إنت مش بس حبيبي، إنت صاحبي وبيتي.",
+      "وجودك بيخليني أقوى وأسعد.",
+      "أنا محظوظة بيك أكتر مما تتخيل.",
+      "كل مرة أشوفك قلبي يفرح من جديد.",
+      "إنت أجمل جزء في أيامي.",
+      "بحب ضحكتك وكلامك وحنانك.",
+      "معاك بحس إن كل حاجة ممكنة.",
+      "إنت حتة من قلبي مش شبه حد.",
+      "حبك مخلي الحياة ألطف.",
+      "أنا فخورة بيك وبكل حاجة فيك.",
+      "إنت دايمًا سبب راحتي.",
+      "بحب إنك أنت، بكل بساطة.",
+      "كل يوم بيعدي بحبك أكتر.",
+      "وجودك جنبي أجمل هدية.",
+      "إنت الحكاية اللي بحب أعيشها كل يوم.",
+      "بحس معاك إن قلبي في مكانه الصح.",
+      "أنت الشخص اللي بيهون عليا كل حاجة.",
+      "بحب اهتمامك حتى في أبسط التفاصيل.",
+      "في عيني، إنت دايمًا مميز.",
+      "إنت أجمل دعوة ربنا استجابها.",
+      "معاك اللحظات العادية بتبقى مميزة.",
+      "بحبك في هدوئك وفي جنانك.",
+      "إنت السبب ورا أجمل ضحكة عندي.",
+      "قلبك من أحن القلوب اللي عرفتها.",
+      "أنا ممتنة لكل لحظة جمعتني بيك.",
+      "إنت نصيبي الحلو.",
+      "حبك بيكبر جوايا كل يوم.",
+      "إنت دايمًا أقرب حد لقلبي.",
+      "معاك بحس إني مش لوحدي أبدًا.",
+      "إنت فرحتي المفضلة.",
+      "وجودك بيخليني أحب الحياة أكتر.",
+      "إنت الشخص اللي نفسي أفضل أحبه العمر كله.",
+      "بحب طريقة وجودك في حياتي.",
+      "أيامي بيك أحلى وأحن.",
+      "إنت معنى الحب بالنسبالي.",
+      "قلبي اختارك ولسه بيختارك كل يوم.",
+      "بحبك حب هادي وعميق وجميل.",
+      "إنت أجمل من كل الكلام اللي ممكن أقوله.",
+      "معاك كل حاجة ليها طعم تاني.",
+      "إنت الشخص اللي بيفرق معايا دايمًا.",
+      "ضحكتك عندي بالدنيا.",
+      "كل سنة وإنت أقرب لقلبي.",
+      "بحبك قد كل اللحظات الحلوة بينا.",
+      "إنت أجمل بداية وأحلى استمرار.",
+      "قربك بيريح روحي.",
+      "إنت الحلم اللي بقي حقيقة.",
+      "بحب إننا إحنا.",
+      "وجودك بيكمل أيامي.",
+      "إنت أكتر حد بحب أطمن عليه.",
+      "أنا بحبك في كل حالاتك.",
+      "إنت أحن شخص على قلبي.",
+      "كل يوم معاك ذكرى جديدة.",
+      "بحبك حب ملوش آخر.",
+      "إنت أجمل اختيار اختاره قلبي.",
+      "معاك قلبي بيضحك.",
+      "إنت دايمًا في بالي.",
+      "بحبك أكتر من امبارح وأقل من بكرة.",
+      "إنت سبب سعادتي البسيطة والكبيرة.",
+      "وجودك في حياتي كفاية يخليني مبسوطة.",
+      "إنت حبيبي وأقرب الناس ليا.",
+      "أنا بحبك بطريقة محدش يعرفها غير قلبي.",
+      "كل لحظة معاك بتتحفظ جوايا."
+    ];
+
+    const endings = [
+      "ربنا يخليك ليا دايمًا ❤️",
+      "ويفضل حبنا يكبر يوم ورا يوم ❤️",
+      "وأفضل دايمًا شايفة الدنيا أحلى بيك ❤️",
+      "ومهما عدت الأيام، هتفضل أنت اختياري ❤️",
+      "كل سنة وإنت حبيبي وفرحتي ❤️"
+    ];
+
+    const messages = [];
+
+    for (let i = 0; i < beginnings.length; i++) {
+      for (let j = 0; j < endings.length; j++) {
+        messages.push(beginnings[i] + " " + endings[j]);
+      }
+    }
+
+    function showTodayMessage() {
+      const today = new Date();
+      const start = new Date(startDate);
+
+      const difference = today - start;
+      let dayNumber = Math.floor(difference / (1000 * 60 * 60 * 24)) + 1;
+
+      if (dayNumber < 1) {
+        dayNumber = 1;
+      }
+
+      if (dayNumber > 365) {
+        dayNumber = 365;
+      }
+
+      document.getElementById("dailyMessage").innerText = messages[dayNumber - 1];
+      document.getElementById("dayCounter").innerText = "اليوم رقم " + dayNumber + " من 365";
+    }
+
+    function loadPhotos() {
+      const gallery = document.getElementById("gallery");
+      const emptyPhotos = document.getElementById("emptyPhotos");
+
+      if (photos.length === 0) {
+        emptyPhotos.style.display = "block";
+        return;
+      }
+
+      emptyPhotos.style.display = "none";
+
+      photos.forEach(photo => {
+        const img = document.createElement("img");
+        img.src = photo;
+        img.alt = "صورة من ذكرياتنا";
+        gallery.appendChild(img);
+      });
+    }
+
+    showTodayMessage();
+    loadPhotos();
+  </script>
+
+</body>
+</html>
