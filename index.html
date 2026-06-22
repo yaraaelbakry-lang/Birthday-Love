@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: Tahoma, Arial, sans-serif;
-      background: linear-gradient(135deg, #d9fff3, #f4fffb);
+      background: linear-gradient(135deg, #d7fff2, #f3fffb);
       color: #21423c;
       text-align: center;
     }
@@ -54,6 +54,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 10px;
     }
 
     .counter {
@@ -139,7 +140,7 @@
 
   <section class="card">
     <h2>رسالة النهارده 💌</h2>
-    <div class="message" id="dailyMessage"></div>
+    <div class="message" id="dailyMessage" dir="auto"></div>
     <div class="counter" id="dayCounter"></div>
 
     <button onclick="showTodayMessage()">اعرض رسالة النهارده</button>
@@ -163,15 +164,13 @@
   </footer>
 
   <script>
-    /*
-      تاريخ بداية الرسائل:
-      الرسالة رقم 1 هتظهر يوم 7 يوليو 2026
-    */
     const startDate = "2026-07-07";
+    const totalMessages = 380;
 
     /*
-      هنا هنضيف الصور بعد ما نرفعها على GitHub.
-      مثال:
+      لما ترفعي الصور على GitHub في فولدر اسمه photos،
+      حطي أسماءها هنا بالشكل ده:
+
       const photos = [
         "photos/photo1.jpg",
         "photos/photo2.jpg",
@@ -180,106 +179,152 @@
     */
     const photos = [];
 
-    /*
-      لو عايزة تبعتيلي رسايل معينة، هنحطها هنا.
-      حاليًا سايبينها فاضية، والكود هيستخدم الرسايل الجاهزة تحت.
-    */
-    const customMessages = [];
-
-    const messageStarts = [
-      "وجودك في حياتي أجمل صدفة حصلتلي.",
-      "كل يوم معاك بيأكدلي إن الحب حقيقي.",
-      "ابتسامتك بتخلي أي يوم أحلى.",
-      "إنت الأمان اللي قلبي اختاره.",
-      "بحب تفاصيلك الصغيرة قبل الكبيرة.",
-      "صوتك لوحده كفاية يطمن قلبي.",
-      "معاك الدنيا بتبقى أهدى وأجمل.",
-      "إنت الشخص اللي بحمد ربنا عليه كل يوم.",
-      "قربك نعمة مش عادية.",
-      "بحبك بطريقة أكبر من الكلام.",
-      "كل ذكرى بينا ليها مكان خاص في قلبي.",
-      "إنت مش بس حبيبي، إنت صاحبي وبيتي.",
-      "وجودك بيخليني أقوى وأسعد.",
-      "أنا محظوظة بيك أكتر مما تتخيل.",
-      "كل مرة أشوفك قلبي يفرح من جديد.",
-      "إنت أجمل جزء في أيامي.",
-      "بحب ضحكتك وكلامك وحنانك.",
-      "معاك بحس إن كل حاجة ممكنة.",
-      "إنت حتة من قلبي مش شبه حد.",
-      "حبك مخلي الحياة ألطف.",
-      "أنا فخورة بيك وبكل حاجة فيك.",
-      "إنت دايمًا سبب راحتي.",
-      "بحب إنك أنت، بكل بساطة.",
-      "كل يوم بيعدي بحبك أكتر.",
-      "وجودك جنبي أجمل هدية.",
-      "إنت الحكاية اللي بحب أعيشها كل يوم.",
-      "بحس معاك إن قلبي في مكانه الصح.",
-      "أنت الشخص اللي بيهون عليا كل حاجة.",
-      "بحب اهتمامك حتى في أبسط التفاصيل.",
-      "في عيني، إنت دايمًا مميز.",
-      "إنت أجمل دعوة ربنا استجابها.",
-      "معاك اللحظات العادية بتبقى مميزة.",
-      "بحبك في هدوئك وفي جنانك.",
-      "إنت السبب ورا أجمل ضحكة عندي.",
-      "قلبك من أحن القلوب اللي عرفتها.",
-      "أنا ممتنة لكل لحظة جمعتني بيك.",
-      "إنت نصيبي الحلو.",
-      "حبك بيكبر جوايا كل يوم.",
-      "إنت دايمًا أقرب حد لقلبي.",
-      "معاك بحس إني مش لوحدي أبدًا.",
-      "إنت فرحتي المفضلة.",
-      "وجودك بيخليني أحب الحياة أكتر.",
-      "إنت الشخص اللي نفسي أفضل أحبه العمر كله.",
-      "بحب طريقة وجودك في حياتي.",
-      "أيامي بيك أحلى وأحن.",
-      "إنت معنى الحب بالنسبالي.",
-      "قلبي اختارك ولسه بيختارك كل يوم.",
-      "بحبك حب هادي وعميق وجميل.",
-      "إنت أجمل من كل الكلام اللي ممكن أقوله.",
-      "معاك كل حاجة ليها طعم تاني.",
-      "إنت الشخص اللي بيفرق معايا دايمًا.",
-      "ضحكتك عندي بالدنيا.",
-      "كل سنة وإنت أقرب لقلبي.",
-      "بحبك قد كل اللحظات الحلوة بينا.",
-      "إنت أجمل بداية وأحلى استمرار.",
-      "قربك بيريح روحي.",
-      "إنت الحلم اللي بقي حقيقة.",
-      "بحب إننا إحنا.",
-      "وجودك بيكمل أيامي.",
-      "إنت أكتر حد بحب أطمن عليه.",
-      "أنا بحبك في كل حالاتك.",
-      "إنت أحن شخص على قلبي.",
-      "كل يوم معاك ذكرى جديدة.",
-      "بحبك حب ملوش آخر.",
-      "إنت أجمل اختيار اختاره قلبي.",
-      "معاك قلبي بيضحك.",
-      "إنت دايمًا في بالي.",
-      "بحبك أكتر من امبارح وأقل من بكرة.",
-      "إنت سبب سعادتي البسيطة والكبيرة.",
-      "وجودك في حياتي كفاية يخليني مبسوطة.",
-      "إنت حبيبي وأقرب الناس ليا.",
-      "أنا بحبك بطريقة محدش يعرفها غير قلبي.",
-      "كل لحظة معاك بتتحفظ جوايا."
+    const fixedMessages = [
+      "كل سنة وإنت حبيبي، my favorite person and my safest place ❤️",
+      "I love you in a way that feels calm, warm, and forever.",
+      "وجودك في حياتي بيخلّي كل حاجة أحن وأجمل.",
+      "You are my happy thought in the middle of any hard day.",
+      "بحبك مش بس عشان أنت حبيبي، بحبك عشان أنت بيتي.",
+      "Every little thing about you makes my heart smile.",
+      "إنت أجمل عادة في يومي، وأحلى جزء في حياتي.",
+      "I hope life gives you softness, joy, and everything your heart deserves.",
+      "بحاول أخلي يومك أحلى، زي ما إنت بتخلي حياتي كلها أحلى.",
+      "You are not just loved, you are deeply treasured.",
+      "قلبي بيختارك كل يوم من غير ما يفكر مرتين.",
+      "Loving you feels like finding peace in a noisy world.",
+      "إنت الشخص اللي وجوده بيطمن قلبي من غير مجهود.",
+      "I’m so proud of you, of your heart, your effort, and your soul.",
+      "معاك حتى الأيام العادية بتبقى special.",
+      "You make love feel easy, gentle, and real.",
+      "بحب ضحكتك، صوتك، طريقتك، وكل حاجة فيك.",
+      "My favorite place will always be wherever you are.",
+      "إنت مش مجرد شخص في حياتي، إنت أجمل جزء فيها.",
+      "I love you more than yesterday and less than all our tomorrows.",
+      "ربنا يخليك ليا، يا أحن قلب وأجمل روح.",
+      "You make my world softer just by being in it.",
+      "وجودك جنبي بيخليني أحس إن كل حاجة هتبقى تمام.",
+      "You are my comfort person, my safe thought, my favorite feeling.",
+      "بحبك بطريقة هادية بس عميقة جدًا.",
+      "I hope you always see yourself the way I see you: precious.",
+      "إنت الحتة الحلوة اللي في كل يوم.",
+      "You deserve love that feels like sunshine and peace.",
+      "أنا ممتنة ليك، لوجودك، وللحب اللي بينا.",
+      "You are my today, my tomorrow, and my favorite forever.",
+      "بحب إنك أنت، بكل تفاصيلك وبكل عفويتك.",
+      "Your smile is honestly one of my favorite things in this life.",
+      "إنت نعمة بحاول أحافظ عليها بكل حب.",
+      "I don’t need perfect days, I just need you in them.",
+      "كل مرة أكلمك بحس إن قلبي رجع مكانه.",
+      "You make ordinary moments feel like memories.",
+      "بحبك قد كل الحاجات اللي معرفتش أقولها.",
+      "I hope your heart feels loved today, because it really is.",
+      "إنت دايمًا السبب في أحن ضحكة عندي.",
+      "You are my favorite notification, my favorite voice, my favorite person.",
+      "وجودك في حياتي مش عادي، وجودك نعمة.",
+      "I love the way you make my heart feel safe.",
+      "إنت الشخص اللي الدنيا بتحلى بيه.",
+      "I’m lucky to love you, and even luckier to be loved by you.",
+      "بحبك في هدوئك، في هزارك، في تعبك، وفي كل حالاتك.",
+      "You are the softest part of my life.",
+      "كل يوم معاك بيخليني أتأكد إنك اختياري الصح.",
+      "I hope today treats you as kindly as your heart treats people.",
+      "بحبك حب كبير، بس قلبي دايمًا حاسه أكبر من الكلام.",
+      "You are the love I prayed for without even knowing."
     ];
 
-    const messageEnds = [
-      "ربنا يخليك ليا دايمًا ❤️",
-      "ويفضل حبنا يكبر يوم ورا يوم ❤️",
-      "وأفضل دايمًا شايفة الدنيا أحلى بيك ❤️",
-      "ومهما عدت الأيام، هتفضل أنت اختياري ❤️",
-      "كل سنة وإنت حبيبي وفرحتي ❤️"
+    const arabicParts = [
+      "إنت أجمل حاجة حصلت في حياتي.",
+      "وجودك بيخلّي يومي أهدى وألطف.",
+      "بحب تفاصيلك الصغيرة قبل الكبيرة.",
+      "إنت دايمًا أقرب حد لقلبي.",
+      "ضحكتك كفاية تغيّر مود يومي كله.",
+      "معاك بحس إن الدنيا أبسط وأحن.",
+      "إنت الشخص اللي قلبي بيرتاحله.",
+      "أنا فخورة بيك وبكل حاجة فيك.",
+      "وجودك جنبي بيخلّي كل حاجة أسهل.",
+      "بحبك بطريقة مش محتاجة شرح.",
+      "إنت حبيبي وصاحبي وأماني.",
+      "كل يوم بحس إني محظوظة بيك أكتر.",
+      "إنت دايمًا فكرتي الحلوة.",
+      "قربك بيدّي قلبي طمأنينة.",
+      "بحب إنك في حياتي بالشكل ده.",
+      "إنت أكتر شخص بيفرق معايا.",
+      "كل لحظة معاك بتبقى غالية عندي.",
+      "إنت السبب في ضحكتي من قلبي.",
+      "بحب وجودك حتى في أبسط اللحظات.",
+      "إنت أجمل اختيار اختاره قلبي.",
+      "معاك بحس إني في مكاني الصح.",
+      "إنت نعمة كبيرة في حياتي.",
+      "بحبك في كل حالاتك.",
+      "إنت أحن قلب عرفته.",
+      "كل يوم معاك ليه معنى مختلف.",
+      "إنت اللي بتخلي الحياة أخف.",
+      "أنا ممتنة لوجودك أكتر مما تتخيل.",
+      "إنت أجمل جزء في أيامي.",
+      "بحبك حب هادي ودافي.",
+      "إنت دايمًا الشخص اللي قلبي يختاره."
+    ];
+
+    const englishParts = [
+      "You are my safe place and my favorite feeling.",
+      "You make my heart feel calm and loved.",
+      "I’m grateful for you every single day.",
+      "You make life softer just by being here.",
+      "You are my favorite part of every day.",
+      "I love you more than words can ever explain.",
+      "You are the peace I never knew I needed.",
+      "Your love feels like home to me.",
+      "You make ordinary days feel magical.",
+      "I hope you always feel how loved you are.",
+      "You are my sweetest thought and warmest comfort.",
+      "I’m proud of you in ways I can’t fully say.",
+      "You deserve the gentlest kind of happiness.",
+      "Being loved by you is my favorite blessing.",
+      "You make my world brighter without even trying.",
+      "My heart chooses you again and again.",
+      "You are deeply loved, deeply valued, and deeply missed.",
+      "You are the kind of person poems are written about.",
+      "I hope your day is as beautiful as your soul.",
+      "You are my calm in every storm.",
+      "You make love feel honest and easy.",
+      "I love the way your existence makes mine better.",
+      "You are my favorite hello and my hardest goodbye.",
+      "You deserve all the love you give to everyone else.",
+      "My heart feels lighter whenever I think of you.",
+      "You are my little piece of forever.",
+      "I love you quietly, loudly, deeply, and endlessly.",
+      "You make my life feel warmer.",
+      "You are a blessing I never want to take for granted.",
+      "I hope today hugs your heart gently."
+    ];
+
+    const closings = [
+      "Forever yours ❤️",
+      "Always and always ❤️",
+      "With all my heart ❤️",
+      "My love, my home ❤️",
+      "You are my favorite forever ❤️",
+      "Sending you all my love today ❤️",
+      "I love you endlessly ❤️",
+      "You mean the world to me ❤️",
+      "My heart is always with you ❤️",
+      "You will always be my person ❤️"
     ];
 
     function buildMessages() {
-      const generatedMessages = [];
+      const allMessages = [...fixedMessages];
+      let i = 0;
 
-      for (let i = 0; i < messageStarts.length; i++) {
-        for (let j = 0; j < messageEnds.length; j++) {
-          generatedMessages.push(messageStarts[i] + " " + messageEnds[j]);
-        }
+      while (allMessages.length < totalMessages) {
+        const arabic = arabicParts[i % arabicParts.length];
+        const english = englishParts[(i * 7 + 3) % englishParts.length];
+        const closing = closings[(i * 5 + 1) % closings.length];
+
+        allMessages.push(arabic + " " + english + " " + closing);
+        i++;
       }
 
-      return [...customMessages, ...generatedMessages].slice(0, 365);
+      return allMessages.slice(0, totalMessages);
     }
 
     const messages = buildMessages();
@@ -308,13 +353,13 @@
 
       let dayNumber = differenceInDays + 1;
 
-      if (dayNumber > 365) {
-        dayNumber = 365;
+      if (dayNumber > totalMessages) {
+        dayNumber = totalMessages;
       }
 
       document.getElementById("dailyMessage").innerText = messages[dayNumber - 1];
       document.getElementById("dayCounter").innerText =
-        "اليوم رقم " + dayNumber + " من 365";
+        "اليوم رقم " + dayNumber + " من " + totalMessages;
     }
 
     function toggleAllMessages() {
@@ -329,7 +374,8 @@
 
       messages.forEach((message, index) => {
         const p = document.createElement("p");
-        p.innerText = "اليوم " + (index + 1) + ": " + message;
+        p.dir = "auto";
+        p.innerText = "Day " + (index + 1) + ": " + message;
         allMessagesDiv.appendChild(p);
       });
 
@@ -339,6 +385,8 @@
     function loadPhotos() {
       const gallery = document.getElementById("gallery");
       const emptyPhotos = document.getElementById("emptyPhotos");
+
+      gallery.innerHTML = "";
 
       if (photos.length === 0) {
         emptyPhotos.style.display = "block";
